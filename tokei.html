@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>残り時間</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #2B2B2B;
+            color: #ffffff;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .wrapper {
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            max-width: 650px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        th,
+        td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        th {
+            font-size: 1.05rem;
+            letter-spacing: 1px;
+        }
+
+        tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        p {
+            margin-top: 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        @keyframes backgroundShift {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        body {
+            animation: backgroundShift 30s ease infinite;
+            background-size: 200% 200%;
+        }
+    </style>
+    <script>
+        // 目標時刻を設定
+        var targetTime = { hour: 18, minute: 0, label: "18時00分" };
+
+        // 残り時間を計算して表示する関数
+        function displayRemainingTime(targetTime, timeElement, secondsElement) {
+            var now = new Date();
+            var targetDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), targetTime.hour, targetTime.minute, 0);
+            if (now > targetDate) targetDate.setDate(targetDate.getDate() + 1);
+
+            var remainingTime = targetDate.getTime() - now.getTime();
+            var seconds = Math.floor(remainingTime / 1000);
+            var formattedSeconds = seconds.toLocaleString();
+
+            timeElement.textContent = targetTime.label;
+            secondsElement.textContent = formattedSeconds;
+
+            updateTabTitle(seconds);
+        }
+
+        // 残り時間の表示を更新する関数
+        function updateRemainingTime() {
+            var timeElement = document.getElementById("countdown-time");
+            var secondsElement = document.getElementById("countdown-seconds");
+
+            displayRemainingTime(targetTime, timeElement, secondsElement);
+
+            var minSecondsElement = document.getElementById("min-seconds");
+            var seconds = parseInt(secondsElement.textContent.replace(",", ""));
+            minSecondsElement.textContent = seconds.toLocaleString();
+        }
+
+        setInterval(updateRemainingTime, 1000);
+
+        function updateTabTitle(seconds) {
+            var formattedSeconds = seconds.toLocaleString();
+            document.title = "残り時間: " + formattedSeconds + "秒";
+        }
+    </script>
+</head>
+
+<body>
+    <div class="wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>目標時刻</th>
+                    <th>残り時間（秒）</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="countdown-time"></td>
+                    <td id="countdown-seconds"></td>
+                </tr>
+            </tbody>
+        </table>
+        <p>残り時間: <span id="min-seconds"></span>秒</p>
+    </div>
+</body>
+
+</html>
